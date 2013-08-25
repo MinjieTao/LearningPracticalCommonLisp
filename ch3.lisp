@@ -34,6 +34,7 @@
 (defun load-db (filename)
   (with-open-file (in filename)
     (with-standard-io-syntax
+<<<<<<< HEAD
       (setf *db* (read in)))))
 
 (defun select-by-artist (artist)
@@ -52,3 +53,6 @@
        (if 评分 (equal (getf cd :评分) 评分) t)
        (if 已翻录-p (equal (getf cd :已翻录) 已翻录) t))))
 
+=======
+      (setf *db* (read in)))))
+>>>>>>> 77bf4eb1f6790e7f08c427cb013bb531faa8b8f0
