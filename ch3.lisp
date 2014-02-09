@@ -1,7 +1,7 @@
 (defvar *db* nil)
 
 (defun make-cd (title artist rating ripped)
-  (list :歌名 title :歌手 artist :评分 rating :已翻录 ripped))
+  (list :TITLE title :ARTIST artist :RATING rating :RIPPED ripped))
 
 (defun add-record (cd) 
   (push cd *db*))
@@ -16,14 +16,14 @@
 
 (defun prompt-for-cd ()
   (make-cd 
-   (prompt-read "歌名")
-   (prompt-read "歌手")
-   (or (parse-integer (prompt-read "评分") :junk-allowed t) 0) 
-   (y-or-n-p "已翻录 [y/n]: ")))
+   (prompt-read "TITLE")
+   (prompt-read "ARTIST")
+   (or (parse-integer (prompt-read "RATING") :junk-allowed t) 0) 
+   (y-or-n-p "RIPPED [y/n]: ")))
 
 (defun add-cds ()
   (loop (add-record (prompt-for-cd))
-        (if (not (y-or-n-p "还有？[y/n]: ")) (return))))
+        (if (not (y-or-n-p "Another? [y/n]: ")) (return))))
 
 (defun save-db (filename)
   (with-open-file 
@@ -36,19 +36,22 @@
     (with-standard-io-syntax
       (setf *db* (read in)))))
 
+;; Naive version of select by artist
 (defun select-by-artist (artist)
   (remove-if-not 
-   #'(lambda (cd) (equal (getf cd :歌手) artist))
+   #'(lambda (cd) (equal (getf cd :ARTIST) artist))
    *db*))
 
+;; General select
 (defun select (selector-fn)
   (remove-if-not selector-fn *db*))
 
-(defun where (&key 歌名 歌手 评分 (已翻录 nil 已翻录-p))
+(defun where (&key TITLE ARTIST RATING (RIPPED nil RIPPED-p))
   #'(lambda (cd)
       (and
-       (if 歌名 (equal (getf cd :歌名) 歌名) t)
-       (if 歌手 (equal (getf cd :歌手) 歌手) t)
-       (if 评分 (equal (getf cd :评分) 评分) t)
-       (if 已翻录-p (equal (getf cd :已翻录) 已翻录) t))))
+       (if TITLE (equal (getf cd :TITLE) TITLE) t)
+       (if ARTIST (equal (getf cd :ARTIST) ARTIST) t)
+       (if RATING (equal (getf cd :RATING) RATING) t)
+       (if RIPPED-p (equal (getf cd :RIPPED) RIPPED) t))))
 
+;;(select (where :artist "Jason Mraz" :ripped t))
