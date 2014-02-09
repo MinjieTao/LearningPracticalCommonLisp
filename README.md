@@ -1,4 +1,4 @@
-practical-common-lisp
+Learning Practical Common LISP
 =====================
 
-Practical Common Lisp
+Trying using Clojure
