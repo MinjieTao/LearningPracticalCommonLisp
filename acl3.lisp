@@ -109,7 +109,9 @@
 (defun new-pathes (path node net)
   (mapcar #'(lambda (n)
 	      (cons n path))
-	  (cdr (assoc node net))))
+	  (cdr (assoc node net)))) 
+;; use set-difference to filter the circle case, 
+;; that is (set-difference (assoc node net) path)
 
 (defun filter-new-pathes (path node net)
   (let ((rst (new-pathes path node net)))
