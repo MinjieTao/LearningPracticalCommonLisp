@@ -102,4 +102,22 @@
 					     :l (make-nod :elm 1) 
 					     :r (make-nod :elm 4 
 							  :l (make-nod :elm 3))))))
-		      
+
+;; 6		      
+(defun lst-hash (lst)
+  (let ((tbl (make-hash-table :size (length lst))))
+    (dolist (entity lst)
+      (setf (gethash (car entity) tbl) (cdr entity)))
+    tbl))
+
+(gethash 'a (lst-hash '((a . b) (c . d) (f . e))))
+
+(defun hash-lst (tbl)
+  (let ((lst ()))
+    (maphash #'(lambda (k v)
+		 (setf lst (cons `(,k . ,v)
+				 lst)))
+	     tbl)
+    lst))
+(hash-lst (lst-hash '((a . b) (c . d) (f . e))))
+			   
