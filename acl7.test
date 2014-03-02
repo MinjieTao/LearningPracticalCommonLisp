@@ -1,0 +1,6 @@
+'a 'b 'c
+(list ab c sd)
+%I won't see this line in output
+I will see this
+(+ 1 2)
+#(1 3)
