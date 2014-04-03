@@ -24,3 +24,67 @@
     (reverse lst)))
 
 (coins 124)
+
+;; 3.
+(defun compete ()
+  (let ((lst nil))
+    (dotimes (r 10 lst)
+      (push (random 2)
+            lst))))
+
+(compete)
+
+;; 4. thanks to algorithm on
+;; http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+(defstruct (point (:conc-name nil))
+  x y)
+
+(defun cross (v w)
+  (- (* (x v) (y w))
+     (* (y v) (x w))))
+
+(defun dot (v w)
+  (+ (* (x v) (x w))
+     (* (y v) (y w))))
+
+(defun minus (v w)
+  (make-point :x (- (x v) (x w)) :y (- (y v) (y w))))
+
+(defun intersect (px py x2 y2 qx qy x4 y4)
+  (let ((p (make-point :x px :y py))
+        (r (make-point :x (- x2 px) :y (- y2 py)))
+        (q (make-point :x qx :y qy ))
+        (s (make-point :x (- x4 qx) :y (- y4 qy))))
+    (let ((r-cross-s (cross r s))
+          (q-minus-p-cross-r (cross (minus q p)
+                                r)))
+      (if (and (zerop r-cross-s)
+               (zerop q-minus-p-cross-r))
+          (cond ((let ((q-minus-p-dot-r (dot (minus q p) r)))
+                   (and (>= q-minus-p-dot-r 0)
+                        (>= (dot r r) q-minus-p-dot-r)))
+                 q)
+                ((let ((p-minus-q-dot-s (dot (minus p q) s)))
+                   (and (>= p-minus-q-dot-s 0)
+                        (>= (dot s s) p-minus-q-dot-s)))
+                 p)
+                (t nil))
+          (if (not (zerop r-cross-s))
+              (let ((a (/ (cross (minus q p)
+                                 s)
+                          r-cross-s))
+                    (b (/ q-minus-p-cross-r
+                          r-cross-s)))
+                (if (and (>= a 0)
+                         (>= 1 a)
+                         (>= b 0)
+                         (>= 1 b))
+                    (make-point :x (+ (x p) (* a (x r)))
+                                :y (+ (y p) (* a (y r)))))))))))
+
+(intersect 0 0 1 1 0 1 1 0)
+(intersect 0 0 1 0 1 0 1 1)
+(intersect 0 0 1 0 1 1 0 1)
+(intersect 0 0 -1 0 1 0 2 0)
+
+;;
