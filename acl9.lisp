@@ -87,4 +87,50 @@
 (intersect 0 0 1 0 1 1 0 1)
 (intersect 0 0 -1 0 1 0 2 0)
 
-;;
+;;5
+
+(defun bisec (f min max epislon)
+  (let ((m (/ (+ max min)
+              2)))
+    (if (< (- max min)
+           epislon)
+        m
+        (let ((fmax (funcall f max))
+              (fmin (funcall f min))
+              (fm   (funcall f m)))
+          (cond
+            ((< 0 (* fmin fmax)) (error "wrong message"))
+            ((= 0 fm) m)
+            ((< 0 (* fmin fm)) (bisec f m max epislon))
+            ((< 0 (* fmax fm)) (bisec f min m epislon))
+            (t nil))))))
+
+;; 6
+(defun honer (x &rest eff)
+  (cond
+    ((null eff) 0)
+    ((null (second eff)) (first eff))
+    (t (let ((e (+ (* (first eff)
+                      x)
+                   (second eff))))
+         (apply #'honer x (push e (cddr eff)))))))
+
+(honer 2 1 2 3 4)
+
+;test 5
+(bisec #'(lambda (x)
+           (honer x 2 1)) -5 1 1e-3)
+;; 7
+(values most-positive-fixnum most-negative-fixnum)
+(log (1+ most-positive-fixnum) 2)
+
+;; 8
+(typep 1s0 'short-float) ; short-float
+(typep 1f0 'single-float)
+(typep 1d0 'double-float)
+(typep 1l0 'long-float)
+
+(values most-positive-short-float
+        most-positive-single-float
+        most-positive-double-float
+        most-positive-long-float)
